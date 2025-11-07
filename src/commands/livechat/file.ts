@@ -3,7 +3,7 @@ import { CommandOptions, CommandResult, createCommandConfig } from 'robo.js'
 import { SyncServer } from '@robojs/sync/server.js'
 import type { WebSocketServer } from 'ws'
 import { MessagePayload } from '@robojs/sync/server.js'
-import type { LiveChatData } from '../types/livechat.js'
+import type { LiveChatData } from '../../types/livechat.js'
 
 export const config = createCommandConfig({
 	timeout: 5000,
@@ -20,6 +20,14 @@ export const config = createCommandConfig({
 			description: 'Légende à ajouter au média (optionnel)',
 			type: 'string',
 			required: false
+		},
+		{
+			name: 'maxtime',
+			description: "Nombre de secondes maximum pour l'affichage du média (optionnel)",
+			type: 'number',
+			required: false,
+			min: 1,
+            max: 30
 		}
 	]
 } as const)
@@ -31,9 +39,17 @@ export default async (
 	const url = options.file.url as string
 	const caption = options.caption as string | undefined
 	const type = options.file.contentType
+	const maxTime = options.maxtime;
 	const user = {
 		name: interaction.user.username,
-		avatar: interaction.user.displayAvatarURL({ size: 64 })
+		avatar: interaction.user.displayAvatarURL({ size: 256 })
+	}
+
+	if (!type?.startsWith('audio/') && !type?.startsWith('video/') && !type?.startsWith('image/')) {
+		return {
+			content: 'Le fichier doit être un fichier audio, image ou vidéo ! Type du fichier envoyé: ' + type,
+			flags: MessageFlags.Ephemeral
+		}
 	}
 
 	const wss = SyncServer.getSocketServer() as WebSocketServer | undefined
@@ -42,7 +58,8 @@ export default async (
 			type,
 			user,
 			url,
-			caption: caption || null
+			caption: caption || null,
+			maxTime: maxTime || null
 		},
 		type: 'update',
 		key: ['livechat']
@@ -57,5 +74,5 @@ export default async (
 	// Envoyer les données du média via LiveChat (WebSocket)
 
 	const response = `Média de type **${type}** envoyé via LiveChat par ${user.name}, url de son image: ${user.avatar} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}\nTaille du fichier: ${options.file.size} bytes`
-	interaction.reply({ content: response, flags: MessageFlags.Ephemeral })
+	return { content: response, flags: MessageFlags.Ephemeral };
 }

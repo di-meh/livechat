@@ -1,1 +1,47 @@
 @import 'tailwindcss';
+
+@font-face {
+    font-family: "Gosha Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/PPGoshaSans-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: "Gosha Sans";
+    font-style: normal;
+    font-weight: 700;
+    src: url('/fonts/PPGoshaSans-Bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: "Gosha Sans";
+    font-style: normal;
+    font-weight: 800;
+    src: url('/fonts/PPGoshaSans-Ultrabold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: "Gosha Sans";
+    font-style: normal;
+    font-weight: 100;
+    src: url('/fonts/PPGoshaSans-Thin.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: "Gosha Sans";
+    font-style: normal;
+    font-weight: 200;
+    src: url('/fonts/PPGoshaSans-Ultralight.woff2') format('woff2');
+}
+
+
+
+@theme {
+    --text-shadow-xl: 0 0 5px rgb(0, 0, 0 / 0.25), 0 0 15px rgb(0, 0, 0 / 0.25); 
+    --font-display: "Gosha Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility text-border-* {
+   text-shadow: -4px 0 0 --value(--color-*), 4px 0 0 --value(--color-*), 0 -4px 0 --value(--color-*), 0 4px 0 --value(--color-*);
+}

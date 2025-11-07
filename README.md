@@ -1,4 +1,29 @@
-<p align="center">✨ <strong>Generated with <a href="https://roboplay.dev/create-robo">create-robo</a> magic!</strong> ✨</p>
+# Livechat
+
+Un bot Discord et une application front en React permettant via une commande Discord d'envoyer des médias (video, audio,...) à une source navigateur OBS.
+
+Inspiré par le projet Livechat de la Cacabox.
+
+## Installation
+
+T'auras besoin de **[pnpm](https://pnpm.io/)**.
+
+```bash
+pnpm install
+cp .env.example .env
+```
+
+Remplir les variables manquantes.
+
+## Lancement du projet
+
+```bash
+pnpm run dev
+```
+
+La partie front est dispo à http://localhost:3000 (ou autre port si spécifié dans le .env).
+
+La partie du dessous c'est la partie autogénérée par le framework, si jamais j'en ai besoin pour de la doc je le laisse là.
 
 ---
 

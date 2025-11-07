@@ -5,9 +5,6 @@ ARG NODE_VERSION=25.1.0
 FROM node:${NODE_VERSION}-slim AS base
 
 LABEL fly_launch_runtime="Node.js"
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
 
 # Node.js app lives here
 WORKDIR /app

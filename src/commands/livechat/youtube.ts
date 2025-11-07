@@ -27,6 +27,12 @@ export const config = createCommandConfig({
 			required: false,
             min: 1,
             max: 30
+		},
+		{
+			name: 'anon',
+			description: 'Envoyer le média de manière anonyme (sans nom + avatar)',
+			type: 'boolean',
+			required: false,
 		}
 	]
 } as const)
@@ -46,7 +52,7 @@ export default async (
     const caption = options.caption;
     const type = 'video/youtube';
     const maxTime = options.maxtime;
-    const user = {
+    const user = options.anon ? null : {
 		name: interaction.user.username,
 		avatar: interaction.user.displayAvatarURL({ size: 256 })
 	}
@@ -70,7 +76,7 @@ export default async (
 			client.send(JSON.stringify(payload))
 		})
 	}
-    const response = `Média de type **${type}** envoyé via LiveChat par ${user.name}, url de son image: ${user.avatar} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}`
+	const response = `Média de type **${type}** envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}`
     interaction.reply({ content: response, flags: MessageFlags.Ephemeral })
 
     

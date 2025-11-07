@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@vidstack/react/tailwind.cjs';
 
 @font-face {
     font-family: "Gosha Sans";

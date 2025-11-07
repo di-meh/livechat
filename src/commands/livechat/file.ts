@@ -28,6 +28,12 @@ export const config = createCommandConfig({
 			required: false,
 			min: 1,
             max: 30
+		},
+		{
+			name: 'anon',
+			description: 'Envoyer le média de manière anonyme (sans nom + avatar)',
+			type: 'boolean',
+			required: false,
 		}
 	]
 } as const)
@@ -40,7 +46,7 @@ export default async (
 	const caption = options.caption as string | undefined
 	const type = options.file.contentType
 	const maxTime = options.maxtime;
-	const user = {
+	const user = options.anon ? null : {
 		name: interaction.user.username,
 		avatar: interaction.user.displayAvatarURL({ size: 256 })
 	}
@@ -73,6 +79,6 @@ export default async (
 
 	// Envoyer les données du média via LiveChat (WebSocket)
 
-	const response = `Média de type **${type}** envoyé via LiveChat par ${user.name}, url de son image: ${user.avatar} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}\nTaille du fichier: ${options.file.size} bytes`
+	const response = `Média de type **${type}** envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}\nTaille du fichier: ${options.file.size} bytes`
 	return { content: response, flags: MessageFlags.Ephemeral };
 }

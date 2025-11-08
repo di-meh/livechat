@@ -46,3 +46,9 @@
 @utility text-border-* {
    text-shadow: -4px 0 0 --value(--color-*), 4px 0 0 --value(--color-*), 0 -4px 0 --value(--color-*), 0 4px 0 --value(--color-*);
 }
+
+/* Fix pour Youtube Iframe */
+
+iframe.vds-youtube[data-no-controls] {
+  height: 100% !important;
+}

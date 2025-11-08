@@ -6,7 +6,7 @@ import { MessagePayload } from '@robojs/sync/server.js'
 import type { LiveChatData } from '../../types/livechat.js'
 
 export const config = createCommandConfig({
-	timeout: 5000,
+	timeout: 2000,
 	description: 'Choisis un média à envoyer via LiveChat',
 	options: [
 		{
@@ -19,7 +19,8 @@ export const config = createCommandConfig({
 			name: 'caption',
 			description: 'Légende à ajouter au média (optionnel)',
 			type: 'string',
-			required: false
+			required: false,
+			max: 128
 		},
 		{
 			name: 'maxtime',
@@ -76,8 +77,6 @@ export default async (
 			client.send(JSON.stringify(payload))
 		})
 	}
-
-	// Envoyer les données du média via LiveChat (WebSocket)
 
 	const response = `Média de type **${type}** envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}\nTaille du fichier: ${options.file.size} bytes`
 	return { content: response, flags: MessageFlags.Ephemeral };

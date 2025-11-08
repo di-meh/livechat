@@ -5,7 +5,7 @@ import { WebSocketServer } from "ws";
 import type { LiveChatData } from "../../types/livechat";
 
 export const config = createCommandConfig({
-	timeout: 5000,
+	timeout: 2000,
 	description: 'Choisis une vidéo YouTube a envoyer via LiveChat',
 	options: [
 		{
@@ -18,7 +18,8 @@ export const config = createCommandConfig({
 			name: 'caption',
 			description: 'Légende à ajouter au média (optionnel)',
 			type: 'string',
-			required: false
+			required: false,
+			max: 128
 		},
         {
 			name: "maxtime",
@@ -77,7 +78,7 @@ export default async (
 		})
 	}
 	const response = `Média de type **${type}** envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}`
-    interaction.reply({ content: response, flags: MessageFlags.Ephemeral })
+    return { content: response, flags: MessageFlags.Ephemeral };
 
     
 }

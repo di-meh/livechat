@@ -36,7 +36,7 @@ export default function App() {
 						{livechat.type?.startsWith('image') && <img className="h-full" src={livechat.url || ''} alt="LiveChat Media" />}
 						{(livechat.type?.startsWith('video') || livechat.type?.startsWith('audio')) && (
 							<MediaPlayer className="h-full" onEnded={emptyState} autoPlay title="LiveChat Media" src={livechat.url}>
-								<MediaProvider className="w-full h-full media-video:aspect-auto!" />
+								<MediaProvider className="w-full h-full" />
 							</MediaPlayer>
 						)}
 					</>

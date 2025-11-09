@@ -1,26 +1,92 @@
 import { useSyncState } from '@robojs/sync'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { MediaPlayer, MediaProvider } from '@vidstack/react'
 import { LiveChatData } from '../types/livechat'
 import Test from './components/Test'
 
 export default function App() {
-	const [livechat, setLivechat] = useSyncState<LiveChatData>({ type: null, user: null, url: null, caption: null, maxTime: null }, [
-		'livechat'
-	])
+	const [livechatQueue, setLivechatQueue] = useSyncState<LiveChatData[]>(
+		[], 
+		['livechat']
+	)
 
-	const emptyState = () => {
-		setLivechat({ type: null, user: null, url: null, caption: null, maxTime: null })
-	}
+	const [livechat, setLivechat] = useState<LiveChatData>({
+		type: null,
+		user: null,
+		url: null,
+		caption: null,
+		maxTime: null
+	})
+
+	const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+	const isProcessingRef = useRef(false)
+
+	const processNext = useCallback(() => {
+		if (isProcessingRef.current) return
+
+		setLivechatQueue(prevQueue => {
+			if (prevQueue.length === 0) {
+				// Queue vide, on reset l'affichage
+				setLivechat({
+					type: null,
+					user: null,
+					url: null,
+					caption: null,
+					maxTime: null
+				})
+				isProcessingRef.current = false
+				return prevQueue
+			}
+
+			// On prend le premier élément et on l'affiche
+			const [next, ...remaining] = prevQueue
+			setLivechat(next)
+			isProcessingRef.current = true
+			return remaining
+		})
+	}, [setLivechatQueue])
 
 	useEffect(() => {
-		if (livechat.type?.startsWith('image') || livechat.maxTime !== null || (livechat.caption && !livechat.url)) {
-			const timeout = setTimeout(emptyState, livechat.maxTime !== null ? livechat.maxTime * 1000 : 5000);
-			return () => clearTimeout(timeout);
+		// Si rien n'est affiché et qu'il y a des éléments dans la queue
+		if (!isProcessingRef.current && livechatQueue.length > 0) {
+			processNext()
 		}
-	}, [livechat])
+	}, [livechatQueue, processNext])
+
+	useEffect(() => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current)
+			timeoutRef.current = null
+		}
+
+		const shouldSetTimeout = 
+			livechat.type?.startsWith('image') || 
+			livechat.maxTime !== null || 
+			(livechat.caption && !livechat.url)
+
+		if (shouldSetTimeout && isProcessingRef.current) {
+			const delay = livechat.maxTime !== null ? livechat.maxTime * 1000 : 5000
+			timeoutRef.current = setTimeout(() => {
+				isProcessingRef.current = false
+				processNext()
+			}, delay)
+		}
+
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current)
+				timeoutRef.current = null
+			}
+		}
+	}, [livechat, processNext])
+
+	const handleMediaEnded = useCallback(() => {
+		isProcessingRef.current = false
+		processNext()
+	}, [processNext])
 
 	return (
+		
 		<section className="relative h-full">
 			<section className='fixed top-10 left-10 flex flex-col items-center gap-2 max-w-3xs z-10'>
 				{livechat.user && (
@@ -35,7 +101,7 @@ export default function App() {
 					<>
 						{livechat.type?.startsWith('image') && <img className="h-full" src={livechat.url || ''} alt="LiveChat Media" />}
 						{(livechat.type?.startsWith('video') || livechat.type?.startsWith('audio')) && (
-							<MediaPlayer className="h-full" onEnded={emptyState} autoPlay title="LiveChat Media" src={livechat.url}>
+							<MediaPlayer className="h-full" onEnded={handleMediaEnded} autoPlay title="LiveChat Media" src={livechat.url}>
 								<MediaProvider className="w-full h-full" />
 							</MediaPlayer>
 						)}

@@ -3,6 +3,7 @@ import { CommandInteraction, MessageFlags } from "discord.js";
 import { CommandOptions, CommandResult, createCommandConfig } from "robo.js";
 import { WebSocketServer } from "ws";
 import { LiveChatData } from "../../types/livechat";
+import { getState } from 'robo.js'
 
 export const config = createCommandConfig({
     timeout: 2000,
@@ -14,6 +15,14 @@ export const config = createCommandConfig({
 			type: 'string',
 			required: true,
             max: 128
+		},
+        {
+			name: "maxtime",
+			description: "Nombre de secondes maximum pour l'affichage du média (optionnel)",
+			type: 'number',
+			required: false,
+            min: 1,
+            max: 30
 		},
 		{
 			name: 'anon',
@@ -29,6 +38,7 @@ export default async (
 	options: CommandOptions<typeof config>
 ): Promise<CommandResult> => {
     const caption = options.caption as string;
+    const maxTime = options.maxtime as number | undefined;
     const user = options.anon ? null : {
 		name: interaction.user.username,
 		avatar: interaction.user.displayAvatarURL({ size: 256 })
@@ -36,14 +46,18 @@ export default async (
 
     const wss = SyncServer.getSocketServer() as WebSocketServer | undefined
 
-    const payload: MessagePayload<LiveChatData> = {
-            data: {
-                type: null,
-                user,
-                url: null,
-                caption: caption,
-                maxTime: null
-            },
+    const liveChatState = getState<LiveChatData[]>('livechat-queue') ?? []
+    liveChatState.push(
+        {
+            type: null,
+            user,
+            url: null,
+            caption: caption,
+            maxTime: maxTime ?? null
+        });
+
+    const payload: MessagePayload<LiveChatData[]> = {
+            data: liveChatState,
             type: 'update',
             key: ['livechat']
         }

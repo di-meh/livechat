@@ -1,5 +1,5 @@
-import { CommandInteraction, MessageFlags } from 'discord.js'
-import { CommandOptions, CommandResult, createCommandConfig, getState } from 'robo.js'
+import { APIEmbedField, Colors, CommandInteraction, InteractionResponse, MessageFlags } from 'discord.js'
+import { CommandOptions, createCommandConfig, getState } from 'robo.js'
 import { SyncServer } from '@robojs/sync/server.js'
 import type { WebSocketServer } from 'ws'
 import { MessagePayload } from '@robojs/sync/server.js'
@@ -42,7 +42,7 @@ export const config = createCommandConfig({
 export default async (
 	interaction: CommandInteraction,
 	options: CommandOptions<typeof config>
-): Promise<CommandResult> => {
+): Promise<InteractionResponse> => {
 	const url = options.file.url as string
 	const caption = options.caption as string | undefined
 	const type = options.file.contentType
@@ -55,10 +55,10 @@ export default async (
 	}
 
 	if (!type?.startsWith('audio/') && !type?.startsWith('video/') && !type?.startsWith('image/')) {
-		return {
+		return interaction.reply({
 			content: 'Le fichier doit être un fichier audio, image ou vidéo ! Type du fichier envoyé: ' + type,
 			flags: MessageFlags.Ephemeral
-		}
+		})
 	}
 
 	const wss = SyncServer.getSocketServer() as WebSocketServer | undefined
@@ -82,6 +82,25 @@ export default async (
 		})
 	}
 
-	const response = `Média de type **${type}** envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\nURL: ${url}${caption ? `\nLégende: ${caption}` : ''}\nTaille du fichier: ${options.file.size} bytes`
-	return { content: response, flags: MessageFlags.Ephemeral };
+	const fields : APIEmbedField[] = [
+		{name: 'Username', value: options.anon ? "Personne tkt" : displayName},
+		{name: "Message", value: caption ?? ""},
+		{name: "Type de fichier", value: type},
+		{name: "URL", value: url},
+		{name: "Taille du fichier", value: `${options.file.size} bytes`},
+		{name: "Max Time", value: maxTime ? `${maxTime}sec` : "La durée de la vidéo"}
+	];
+	return interaction.reply({ 
+		embeds: [
+			{
+				title: "Livechat envoyé !",
+				color: Colors.Green,
+				thumbnail: options.anon ? undefined : {
+					url: interaction.user.displayAvatarURL({size:256})
+				},
+				fields
+			}
+		], 
+		flags: MessageFlags.Ephemeral 
+	});
 }

@@ -1,6 +1,6 @@
 import { MessagePayload, SyncServer } from "@robojs/sync/server.js";
-import { CommandInteraction, MessageFlags } from "discord.js";
-import { CommandOptions, CommandResult, createCommandConfig } from "robo.js";
+import { APIEmbedField, Colors, CommandInteraction, InteractionResponse, MessageFlags } from "discord.js";
+import { CommandOptions, createCommandConfig } from "robo.js";
 import { WebSocketServer } from "ws";
 import { LiveChatData } from "../../types/livechat";
 import { getState } from 'robo.js'
@@ -36,7 +36,7 @@ export const config = createCommandConfig({
 export default async (
 	interaction: CommandInteraction,
 	options: CommandOptions<typeof config>
-): Promise<CommandResult> => {
+): Promise<InteractionResponse> => {
     const caption = options.caption as string;
     const maxTime = options.maxtime as number | undefined;
     const guildUser = await interaction.guild?.members.fetch(interaction.user);
@@ -70,6 +70,22 @@ export default async (
             })
         }
     
-        const response = `Message envoyé via LiveChat par ${user?.name ?? "Personne"}, url de son image: ${user?.avatar ?? "Non disponible"} !\n${caption ? `\nLégende: ${caption}` : ''}`
-        return { content: response, flags: MessageFlags.Ephemeral };
+        const fields : APIEmbedField[] = [
+            {name: 'Username', value: options.anon ? "Personne tkt" : displayName},
+            {name: "Message", value: caption},
+            {name: "Max Time", value: `${maxTime ?? 5}sec`}
+        ];
+        return interaction.reply({ 
+            embeds: [
+                {
+                    title: "Livechat envoyé !",
+                    color: Colors.Green,
+                    thumbnail: options.anon ? undefined : {
+                        url: interaction.user.displayAvatarURL({size:256})
+                    },
+                    fields
+                }
+            ], 
+            flags: MessageFlags.Ephemeral 
+        });
 }

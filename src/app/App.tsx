@@ -92,7 +92,7 @@ export default function App() {
 				{livechat.user && (
 					<>
 					<img className='w-full rounded-full border-16 border-green-500' src={livechat.user?.avatar || ''} alt={livechat.user?.name || 'User'} />
-					<p className='text-6xl text-center wrap-break-word font-bold max-w-[12ch]'>{livechat.user?.name || 'Unknown User'}</p>
+					<p className='text-6xl text-center wrap-break-word font-bold max-w-[12ch] -translate-y-15'>{livechat.user?.name || 'Unknown User'}</p>
 					</>
 				)}
 			</section>

@@ -47,8 +47,10 @@ export default async (
 	const caption = options.caption as string | undefined
 	const type = options.file.contentType
 	const maxTime = options.maxtime;
+	const guildUser = await interaction.guild?.members.fetch(interaction.user);
+    const displayName = guildUser?.displayName ?? interaction.user.username;
 	const user = options.anon ? null : {
-		name: interaction.user.username,
+		name: displayName,
 		avatar: interaction.user.displayAvatarURL({ size: 256 })
 	}
 

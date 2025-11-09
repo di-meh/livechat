@@ -39,8 +39,10 @@ export default async (
 ): Promise<CommandResult> => {
     const caption = options.caption as string;
     const maxTime = options.maxtime as number | undefined;
+    const guildUser = await interaction.guild?.members.fetch(interaction.user);
+    const displayName = guildUser?.displayName ?? interaction.user.username;
     const user = options.anon ? null : {
-		name: interaction.user.username,
+		name: displayName,
 		avatar: interaction.user.displayAvatarURL({ size: 256 })
 	}
 

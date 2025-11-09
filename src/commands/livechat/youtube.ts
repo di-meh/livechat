@@ -1,6 +1,6 @@
 import { MessagePayload, SyncServer } from "@robojs/sync/server.js";
 import { CommandInteraction, MessageFlags } from "discord.js";
-import { CommandOptions, CommandResult, createCommandConfig } from "robo.js";
+import { CommandOptions, CommandResult, createCommandConfig, getState } from "robo.js";
 import { WebSocketServer } from "ws";
 import type { LiveChatData } from "../../types/livechat";
 
@@ -59,15 +59,17 @@ export default async (
 	}
 
     const wss = SyncServer.getSocketServer() as WebSocketServer | undefined
-
-    const payload: MessagePayload<LiveChatData> = {
-		data: {
+	const liveChatState = getState<LiveChatData[]>('livechat-queue') ?? []
+	liveChatState.push({
 			type,
 			user,
 			url,
 			caption: caption || null,
             maxTime: maxTime || null
-		},
+		})
+
+    const payload: MessagePayload<LiveChatData[]> = {
+		data: liveChatState,
 		type: 'update',
 		key: ['livechat']
 	}

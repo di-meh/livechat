@@ -1,9 +1,8 @@
 {
 	"name": "livechat",
-	"description": "",
 	"version": "1.0.0",
-	"type": "module",
 	"private": true,
+	"description": "",
 	"keywords": [
 		"api",
 		"http",
@@ -14,13 +13,18 @@
 		"vite",
 		"web"
 	],
+	"type": "module",
 	"scripts": {
 		"build": "robo build",
 		"deploy": "robo deploy",
 		"dev": "robox dev",
 		"doctor": "sage doctor",
+		"fmt": "oxfmt",
+		"fmt:check": "oxfmt --check",
 		"invite": "robo invite",
-		"lint:style": "prettier --write .",
+		"lint": "oxlint .",
+		"lint:fix": "oxlint . --fix",
+		"lint:style": "oxfmt",
 		"start": "robo start",
 		"upgrade": "sage upgrade"
 	},
@@ -43,7 +47,8 @@
 		"@types/react-dom": "^19.2.3",
 		"@types/ws": "^8.18.1",
 		"@vitejs/plugin-react-swc": "^4.3",
-		"prettier": "^3.9.3",
+		"oxfmt": "^0.57.0",
+		"oxlint": "^1.19.0",
 		"typescript": "^5.9.3",
 		"vite": "^5.4.21"
 	}

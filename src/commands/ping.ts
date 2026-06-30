@@ -44,9 +44,9 @@ export default (interaction: ChatInputCommandInteraction): Promise<InteractionRe
 						name: 'Operating System',
 						value: `${os.platform()} ${os.version()} ${os.arch()} (${os.release()})`,
 						inline: false
-					},
+					}
 				]
 			}
 		]
-	});
+	})
 }

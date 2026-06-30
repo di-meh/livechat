@@ -6,10 +6,10 @@ Inspiré par le projet Livechat de la Cacabox.
 
 ## Installation
 
-T'auras besoin de **[pnpm](https://pnpm.io/)**.
+T'auras besoin de **[mise](https://mise.jdx.dev/)**.
 
 ```bash
-pnpm install
+mise install
 cp .env.example .env
 ```
 

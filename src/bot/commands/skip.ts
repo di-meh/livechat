@@ -2,18 +2,20 @@ import { SlashCommandBuilder, type APIEmbedField, type ChatInputCommandInteracti
 import { getChannelKey } from '../../livechat/items.js'
 import { advanceChannel, getChannelState } from '../../server/playback.js'
 import type { BotCommand } from '../../types/bot.js'
-import { createCommandContext, replyWithLiveChatEmbed } from '../commandHelpers.js'
+import { createCommandContext, liveChatModerationPermission, replyWithLiveChatEmbed } from '../commandHelpers.js'
 
 const command: BotCommand = {
 	data: new SlashCommandBuilder()
 		.setName('skip')
 		.setDescription('Passe immédiatement au média suivant')
+		.setDefaultMemberPermissions(liveChatModerationPermission)
 		.addUserOption((option) =>
 			option
 				.setName('userto')
 				.setDescription("Passer au média suivant uniquement pour l'utilisateur ciblé")
 				.setRequired(false)
 		),
+	requiredMemberPermissions: liveChatModerationPermission,
 	execute: async (interaction: ChatInputCommandInteraction) => {
 		const context = await createCommandContext(interaction)
 		const stateBefore = getChannelState(context.target)

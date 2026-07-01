@@ -11,11 +11,7 @@ import type {
 	SupportedAttachmentMediaType
 } from '../types/livechat.js'
 
-function createBaseItem(input: {
-	maxTime?: number | null
-	target: LiveChatTarget
-	user: LiveChatUser | null
-}) {
+function createBaseItem(input: { maxTime?: number | null; target: LiveChatTarget; user: LiveChatUser | null }) {
 	return {
 		id: randomUUID(),
 		createdAt: new Date().toISOString(),

@@ -1,6 +1,8 @@
-import type { APIEmbedField, ChatInputCommandInteraction, User } from 'discord.js'
+import { PermissionFlagsBits, type APIEmbedField, type ChatInputCommandInteraction, type User } from 'discord.js'
 import { createLiveChatReply, createLiveChatUser, getDisplayName } from '../livechat/discord.js'
 import type { LiveChatTarget, LiveChatUser } from '../types/livechat.js'
+
+export const liveChatModerationPermission = PermissionFlagsBits.ManageMessages
 
 export function getTargetFromUser(user: User | null): LiveChatTarget {
 	if (!user) {

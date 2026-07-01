@@ -26,7 +26,12 @@ async function collectEventFiles(directory: string): Promise<string[]> {
 }
 
 export async function loadEvents(client: Client): Promise<void> {
-	const sourceDirectory = join(process.cwd(), process.env.NODE_ENV === 'production' ? 'dist/src' : 'src', 'bot', 'events')
+	const sourceDirectory = join(
+		process.cwd(),
+		process.env.NODE_ENV === 'production' ? 'dist/src' : 'src',
+		'bot',
+		'events'
+	)
 	const eventFiles = await collectEventFiles(sourceDirectory)
 
 	for (const file of eventFiles) {

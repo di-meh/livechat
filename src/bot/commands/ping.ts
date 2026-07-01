@@ -31,7 +31,12 @@ function formatDuration(seconds: number): string {
 	const minutes = Math.floor((seconds % 3600) / 60)
 	const remainingSeconds = Math.floor(seconds % 60)
 
-	const parts = [days ? `${days} j` : null, hours ? `${hours} h` : null, minutes ? `${minutes} min` : null, `${remainingSeconds} s`].filter(Boolean)
+	const parts = [
+		days ? `${days} j` : null,
+		hours ? `${hours} h` : null,
+		minutes ? `${minutes} min` : null,
+		`${remainingSeconds} s`
+	].filter(Boolean)
 
 	return parts.join(' ')
 }

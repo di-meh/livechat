@@ -1,3 +1,4 @@
+import { MessageFlags } from 'discord.js'
 import type { ChatInputCommandInteraction } from 'discord.js'
 import type { BotCommand, BotEvent } from '../../types/bot.js'
 
@@ -18,6 +19,21 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 			})
 		}
 		return
+	}
+
+	if (command.requiredMemberPermissions !== undefined) {
+		const memberPermissions = interaction.memberPermissions
+
+		if (!memberPermissions?.has(command.requiredMemberPermissions)) {
+			if (!interaction.replied && !interaction.deferred) {
+				await interaction.reply({
+					content: "Vous n'avez pas la permission d'utiliser cette commande.",
+					flags: MessageFlags.Ephemeral
+				})
+			}
+
+			return
+		}
 	}
 
 	await command.execute(interaction)

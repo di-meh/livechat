@@ -10,7 +10,11 @@ const command: BotCommand = {
 		.setName('caption')
 		.setDescription('Envoie un message sur le livechat')
 		.addStringOption((option) =>
-			option.setName('caption').setDescription('Message à envoyer (128 caractères max.)').setRequired(true).setMaxLength(128)
+			option
+				.setName('caption')
+				.setDescription('Message à envoyer (128 caractères max.)')
+				.setRequired(true)
+				.setMaxLength(128)
 		)
 		.addNumberOption((option) =>
 			option
@@ -21,7 +25,10 @@ const command: BotCommand = {
 				.setMaxValue(30)
 		)
 		.addBooleanOption((option) =>
-			option.setName('anon').setDescription('Envoyer le média de manière anonyme (sans nom ni avatar)').setRequired(false)
+			option
+				.setName('anon')
+				.setDescription('Envoyer le média de manière anonyme (sans nom ni avatar)')
+				.setRequired(false)
 		)
 		.addUserOption((option) =>
 			option

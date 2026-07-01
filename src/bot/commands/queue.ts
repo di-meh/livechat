@@ -2,7 +2,10 @@ import { SlashCommandBuilder, type APIEmbedField, type ChatInputCommandInteracti
 import type { LiveChatItem } from '../../types/livechat.js'
 import { getChannelState } from '../../server/playback.js'
 import type { BotCommand } from '../../types/bot.js'
-import { createCommandContext, replyWithLiveChatEmbed } from '../commandHelpers.js'
+import { createCommandContext, liveChatModerationPermission, replyWithLiveChatEmbed } from '../commandHelpers.js'
+
+const MAX_EMBED_FIELD_LENGTH = 1024
+const PREVIEW_LIMIT = 5
 
 function formatItemAge(createdAt: string): string {
 	const ageMilliseconds = Date.now() - new Date(createdAt).getTime()
@@ -31,30 +34,56 @@ function formatItem(item: LiveChatItem): string {
 	return `${item.type} par ${author}${caption}${maxTime}${age}`
 }
 
+function truncateLine(value: string, maxLength: number): string {
+	if (value.length <= maxLength) {
+		return value
+	}
+
+	return `${value.slice(0, Math.max(0, maxLength - 1))}…`
+}
+
 function formatUpcomingItems(items: LiveChatItem[]): string {
 	if (items.length === 0) {
 		return 'Aucun élément en attente'
 	}
 
-	const preview = items.slice(0, 5).map((item, index) => `${index + 1}. ${formatItem(item)}`)
+	const lines: string[] = []
+	const previewItems = items.slice(0, PREVIEW_LIMIT)
 
-	if (items.length > 5) {
-		preview.push(`... et ${items.length - 5} autre(s)`)
+	for (const [index, item] of previewItems.entries()) {
+		const linePrefix = `${index + 1}. `
+		const maxLineLength = MAX_EMBED_FIELD_LENGTH - linePrefix.length
+		const nextLine = `${linePrefix}${truncateLine(formatItem(item), maxLineLength)}`
+		const nextValue = lines.length === 0 ? nextLine : `${lines.join('\n')}\n${nextLine}`
+
+		if (nextValue.length > MAX_EMBED_FIELD_LENGTH) {
+			break
+		}
+
+		lines.push(nextLine)
 	}
 
-	return preview.join('\n')
+	if (items.length > PREVIEW_LIMIT) {
+		const overflowLine = `... et ${items.length - PREVIEW_LIMIT} autre(s)`
+		const nextValue = `${lines.join('\n')}\n${overflowLine}`
+
+		if (nextValue.length <= MAX_EMBED_FIELD_LENGTH) {
+			lines.push(overflowLine)
+		}
+	}
+
+	return lines.length > 0 ? lines.join('\n') : 'Aucun élément en attente'
 }
 
 const command: BotCommand = {
 	data: new SlashCommandBuilder()
 		.setName('queue')
 		.setDescription('Affiche l’état de la file livechat')
+		.setDefaultMemberPermissions(liveChatModerationPermission)
 		.addUserOption((option) =>
-			option
-				.setName('userto')
-				.setDescription("Afficher uniquement la file de l'utilisateur ciblé")
-				.setRequired(false)
+			option.setName('userto').setDescription("Afficher uniquement la file de l'utilisateur ciblé").setRequired(false)
 		),
+	requiredMemberPermissions: liveChatModerationPermission,
 	execute: async (interaction: ChatInputCommandInteraction) => {
 		const context = await createCommandContext(interaction)
 		const state = getChannelState(context.target)

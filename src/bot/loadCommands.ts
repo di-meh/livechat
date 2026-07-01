@@ -28,7 +28,12 @@ async function collectCommandFiles(directory: string): Promise<string[]> {
 
 export async function loadCommands(): Promise<Collection<string, BotCommand>> {
 	const commands = new DiscordCollection<string, BotCommand>()
-	const sourceDirectory = join(process.cwd(), process.env.NODE_ENV === 'production' ? 'dist/src' : 'src', 'bot', 'commands')
+	const sourceDirectory = join(
+		process.cwd(),
+		process.env.NODE_ENV === 'production' ? 'dist/src' : 'src',
+		'bot',
+		'commands'
+	)
 	const commandFiles = await collectCommandFiles(sourceDirectory)
 
 	for (const file of commandFiles) {

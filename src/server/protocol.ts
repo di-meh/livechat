@@ -56,7 +56,10 @@ export function parseClientMessage(raw: string): ClientMessage | null {
 		if (payload.type === 'ready') {
 			return {
 				type: 'ready',
-				lastKnownItemId: typeof payload.lastKnownItemId === 'string' || payload.lastKnownItemId === null ? payload.lastKnownItemId : undefined
+				lastKnownItemId:
+					typeof payload.lastKnownItemId === 'string' || payload.lastKnownItemId === null
+						? payload.lastKnownItemId
+						: undefined
 			}
 		}
 

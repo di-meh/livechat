@@ -14,7 +14,6 @@ type LiveChatSocket = WebSocket & {
 	channel?: LiveChatChannelKey
 }
 
-
 function setupHeartbeat(wss: WebSocketServer): void {
 	setInterval(() => {
 		for (const rawSocket of wss.clients) {

@@ -1,4 +1,10 @@
-import type { ChatInputCommandInteraction, ClientEvents, RESTPostAPIChatInputApplicationCommandsJSONBody, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from 'discord.js'
+import type {
+	ChatInputCommandInteraction,
+	ClientEvents,
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
+	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder
+} from 'discord.js'
 
 export type SlashCommandData = SlashCommandBuilder | SlashCommandOptionsOnlyBuilder
 
@@ -7,6 +13,7 @@ export type BotCommand = {
 	toJSON?: () => RESTPostAPIChatInputApplicationCommandsJSONBody
 	execute: (interaction: ChatInputCommandInteraction) => Promise<void>
 	registerScope?: 'global' | 'guild'
+	requiredMemberPermissions?: bigint
 }
 
 export type BotEvent<K extends keyof ClientEvents = keyof ClientEvents> = {

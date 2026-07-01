@@ -10,7 +10,11 @@ const command: BotCommand = {
 		.setDescription('Choisis un média à envoyer via le livechat')
 		.addAttachmentOption((option) => option.setName('file').setDescription('Le média à envoyer').setRequired(true))
 		.addStringOption((option) =>
-			option.setName('caption').setDescription('Légende à ajouter au média (optionnel)').setRequired(false).setMaxLength(128)
+			option
+				.setName('caption')
+				.setDescription('Légende à ajouter au média (optionnel)')
+				.setRequired(false)
+				.setMaxLength(128)
 		)
 		.addNumberOption((option) =>
 			option
@@ -21,7 +25,10 @@ const command: BotCommand = {
 				.setMaxValue(30)
 		)
 		.addBooleanOption((option) =>
-			option.setName('anon').setDescription('Envoyer le média de manière anonyme (sans nom ni avatar)').setRequired(false)
+			option
+				.setName('anon')
+				.setDescription('Envoyer le média de manière anonyme (sans nom ni avatar)')
+				.setRequired(false)
 		)
 		.addUserOption((option) =>
 			option

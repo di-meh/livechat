@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: false
+  commands:
+    lint-fix:
+      run: pnpm run lint:fix
+      stage_fixed: true
+    fmt:
+      run: pnpm run fmt
+      stage_fixed: true

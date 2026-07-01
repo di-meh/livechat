@@ -7,9 +7,21 @@ export type SupportedAttachmentMediaType = `audio/${string}` | `image/${string}`
 
 export type LiveChatMediaType = SupportedAttachmentMediaType | 'video/youtube'
 
+export type LiveChatTarget =
+	| {
+			kind: 'global'
+	  }
+	| {
+			kind: 'user'
+			userId: string
+	  }
+
 type LiveChatBase = {
+	id: string
 	user: LiveChatUser | null
 	maxTime: number | null
+	target: LiveChatTarget
+	createdAt: string
 }
 
 export type LiveChatMediaItem = LiveChatBase & {
@@ -26,6 +38,15 @@ export type LiveChatCaptionItem = LiveChatBase & {
 	caption: string
 }
 
-export type LiveChatData = LiveChatMediaItem | LiveChatCaptionItem
+export type LiveChatItem = LiveChatMediaItem | LiveChatCaptionItem
 
-export type LiveChatQueue = LiveChatData[]
+export type LiveChatQueue = LiveChatItem[]
+
+export type LiveChatChannelKey = 'global' | `user:${string}`
+
+export type LiveChatStateSnapshot = {
+	channel: LiveChatChannelKey
+	currentItem: LiveChatItem | null
+	queueLength: number
+	queue: LiveChatQueue
+}

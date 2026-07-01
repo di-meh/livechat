@@ -10,7 +10,7 @@
 			"version": "18.3.1"
 		}
 	},
-	"ignorePatterns": ["node_modules", ".git", ".robo"],
+	"ignorePatterns": ["node_modules", ".git", "dist"],
 	"categories": {
 		"correctness": "warn"
 	},

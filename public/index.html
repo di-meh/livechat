@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow, noarchive" />
+		<title>LiveChat G2</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vidstack/cdn@1.15.6/player/styles/default/theme.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vidstack/cdn@1.15.6/player/styles/default/layouts/video.css" />
+		<link rel="stylesheet" href="/style.css" />
+		<script type="module" src="https://cdn.jsdelivr.net/npm/@vidstack/cdn@1.15.6/player"></script>
+	</head>
+	<body>
+		<main id="app" class="app">
+			<section id="identity" class="identity hidden" aria-live="polite">
+				<img id="identity-avatar" class="identity-avatar" alt="" />
+				<p id="identity-name" class="identity-name"></p>
+			</section>
+
+			<section class="stage">
+				<div id="media-shell" class="media-shell"></div>
+			</section>
+
+			<p id="caption" class="caption hidden"></p>
+		</main>
+
+		<script src="/client.js" defer></script>
+	</body>
+</html>

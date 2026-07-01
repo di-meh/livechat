@@ -87,6 +87,13 @@ export function shiftNextItem(channel: LiveChatChannelKey): LiveChatItem | null 
 	return state.queue.shift() ?? null
 }
 
+export function clearQueue(channel: LiveChatChannelKey): number {
+	const state = getOrCreateChannel(channel)
+	const clearedCount = state.queue.length
+	state.queue = []
+	return clearedCount
+}
+
 export function clearChannelTimeout(channel: LiveChatChannelKey): void {
 	const state = getOrCreateChannel(channel)
 

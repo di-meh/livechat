@@ -37,6 +37,7 @@ export async function replyWithLiveChatEmbed(input: {
 	isAnonymous: boolean | null
 	target: LiveChatTarget
 	targetUser: User | null
+	title?: string
 }) {
 	return createLiveChatReply(input)
 }

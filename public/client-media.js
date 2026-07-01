@@ -1,6 +1,5 @@
 import {
   VidstackPlayer,
-  VidstackPlayerLayout,
 } from "https://cdn.vidstack.io/player";
 import {
   mediaShellElement,
@@ -54,8 +53,10 @@ export function createMediaController() {
       title: item.caption || "LiveChat Media",
       src: getVidstackSource(item),
       autoplay: true,
+      controls: false,
       playsInline: true,
       crossOrigin: item.type === "video/youtube" ? undefined : "",
+      layout: false,
     });
 
     if (sessionId !== activePlayerSession || item.id !== currentItemId) {

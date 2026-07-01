@@ -63,11 +63,12 @@ export function createLiveChatReply(input: {
   isAnonymous: boolean | null;
   target: LiveChatTarget;
   targetUser: User | null;
+  title?: string;
 }): Promise<unknown> {
   const reply: InteractionReplyOptions = {
     embeds: [
       {
-        title: "Livechat envoyé !",
+        title: input.title ?? "Livechat envoyé !",
         color: Colors.Green,
         thumbnail: input.isAnonymous
           ? undefined

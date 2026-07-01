@@ -1,6 +1,7 @@
 import { getDisplayDurationMilliseconds, getChannelKey, shouldAutoAdvance } from '../livechat/items.js'
 import type { LiveChatChannelKey, LiveChatItem, LiveChatTarget } from '../types/livechat.js'
 import {
+	clearQueue,
 	clearChannelTimeout,
 	enqueueItem,
 	getChannelSnapshot,
@@ -72,4 +73,21 @@ export function advanceChannel(channel: LiveChatChannelKey, expectedItemId?: str
 
 export function getChannelState(target: LiveChatTarget) {
 	return getChannelSnapshot(getChannelKey(target))
+}
+
+export function clearLiveChatChannel(target: LiveChatTarget) {
+	const channel = getChannelKey(target)
+	const currentItem = getCurrentItem(channel)
+	const clearedQueuedItems = clearQueue(channel)
+
+	clearChannelTimeout(channel)
+	setCurrentItem(channel, null)
+	broadcastClear(channel, currentItem?.id ?? null)
+	broadcastState(channel)
+
+	return {
+		channel,
+		clearedCurrentItem: currentItem !== null,
+		clearedQueuedItems
+	}
 }

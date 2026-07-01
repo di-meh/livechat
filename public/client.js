@@ -21,6 +21,10 @@ function handleServerMessage(message) {
 
 	if (message.type === 'hello' || message.type === 'state') {
 		if (message.state?.currentItem) {
+			if (message.state.currentItem.id === media.getCurrentItemId()) {
+				return
+			}
+
 			media.renderItem(message.state.currentItem)
 		} else {
 			media.clearCurrentItem()

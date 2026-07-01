@@ -1,9 +1,10 @@
 import type { Server as HttpServer } from 'node:http'
 import { WebSocket, WebSocketServer } from 'ws'
-import type { LiveChatChannelKey, LiveChatItem } from '../types/livechat.js'
-import { attachClient, detachClient, getChannelClients, getChannelSnapshot } from './channels.js'
+import type { LiveChatChannelKey } from '../types/livechat.js'
+import { attachClient, detachClient } from './channels.js'
+import { sendState } from './broadcast.js'
 import { advanceChannel } from './playback.js'
-import { isLiveChatChannelKey, parseClientMessage, type ServerMessage } from './protocol.js'
+import { isLiveChatChannelKey, parseClientMessage } from './protocol.js'
 
 let websocketServer: WebSocketServer | null = null
 const HEARTBEAT_INTERVAL_MS = 15000
@@ -11,55 +12,6 @@ const HEARTBEAT_INTERVAL_MS = 15000
 type LiveChatSocket = WebSocket & {
 	isAlive?: boolean
 	channel?: LiveChatChannelKey
-}
-
-function send(socket: WebSocket, message: ServerMessage): void {
-	if (socket.readyState === WebSocket.OPEN) {
-		socket.send(JSON.stringify(message))
-	}
-}
-
-function sendState(socket: WebSocket, channel: LiveChatChannelKey, type: 'hello' | 'state' = 'state'): void {
-	send(socket, {
-		type,
-		state: getChannelSnapshot(channel)
-	})
-}
-
-export function broadcastState(channel: LiveChatChannelKey): void {
-	const state = getChannelSnapshot(channel)
-	const message: ServerMessage = {
-		type: 'state',
-		state
-	}
-
-	for (const client of getChannelClients(channel)) {
-		send(client, message)
-	}
-}
-
-export function broadcastPlay(channel: LiveChatChannelKey, item: LiveChatItem): void {
-	const message: ServerMessage = {
-		type: 'play',
-		item,
-		state: getChannelSnapshot(channel)
-	}
-
-	for (const client of getChannelClients(channel)) {
-		send(client, message)
-	}
-}
-
-export function broadcastClear(channel: LiveChatChannelKey, itemId: string | null): void {
-	const message: ServerMessage = {
-		type: 'clear',
-		itemId,
-		state: getChannelSnapshot(channel)
-	}
-
-	for (const client of getChannelClients(channel)) {
-		send(client, message)
-	}
 }
 
 
@@ -109,10 +61,12 @@ function handleSocketConnection(channel: LiveChatChannelKey, socket: WebSocket):
 		}
 
 		if (message.type === 'ping') {
-			send(socket, {
-				type: 'pong',
-				serverTime: Date.now()
-			})
+			socket.send(
+				JSON.stringify({
+					type: 'pong',
+					serverTime: Date.now()
+				})
+			)
 		}
 	})
 

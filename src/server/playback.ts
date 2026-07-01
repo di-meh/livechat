@@ -9,7 +9,7 @@ import {
 	setCurrentItem,
 	shiftNextItem
 } from './channels.js'
-import { broadcastClear, broadcastPlay, broadcastState } from './websocket.js'
+import { broadcastClear, broadcastPlay, broadcastState } from './broadcast.js'
 
 function startCurrentItem(channel: LiveChatChannelKey, item: LiveChatItem): void {
 	setCurrentItem(channel, item)

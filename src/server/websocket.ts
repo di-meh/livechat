@@ -1,5 +1,4 @@
-import type { IncomingMessage, Server as HttpServer } from 'node:http'
-import { parse } from 'node:url'
+import type { Server as HttpServer } from 'node:http'
 import { WebSocket, WebSocketServer } from 'ws'
 import type { LiveChatChannelKey, LiveChatItem } from '../types/livechat.js'
 import { attachClient, detachClient, getChannelClients, getChannelSnapshot } from './channels.js'
@@ -126,9 +125,8 @@ function handleSocketConnection(channel: LiveChatChannelKey, socket: WebSocket):
 	})
 }
 
-function resolveChannel(request: IncomingMessage): LiveChatChannelKey | null {
-	const url = request.url ? parse(request.url, true) : null
-	const channel = typeof url?.query.channel === 'string' ? url.query.channel : null
+function resolveChannel(url: URL): LiveChatChannelKey | null {
+	const channel = url.searchParams.get('channel')
 
 	if (!isLiveChatChannelKey(channel)) {
 		return null
@@ -143,14 +141,14 @@ export function attachWebSocketServer(server: HttpServer): WebSocketServer {
 	setupHeartbeat(wss)
 
 	server.on('upgrade', (request, socket, head) => {
-		const { pathname } = new URL(request.url ?? '/', 'http://localhost')
+		const url = new URL(request.url ?? '/', 'http://localhost')
 
-		if (pathname !== '/ws') {
+		if (url.pathname !== '/ws') {
 			socket.destroy()
 			return
 		}
 
-		const channel = resolveChannel(request)
+		const channel = resolveChannel(url)
 
 		if (!channel) {
 			socket.destroy()

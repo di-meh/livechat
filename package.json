@@ -20,6 +20,7 @@
 		"lint": "oxlint .",
 		"lint:fix": "oxlint . --fix",
 		"lint:style": "oxfmt",
+		"prepare": "lefthook install",
 		"start": "node dist/src/index.js",
 		"typecheck": "tsc --noEmit"
 	},
@@ -34,6 +35,7 @@
 		"@flydotio/dockerfile": "^0.7.10",
 		"@types/node": "^26.0.1",
 		"@types/ws": "^8.18.1",
+		"lefthook": "^2.1.9",
 		"oxfmt": "^0.57.0",
 		"oxlint": "^1.72.0",
 		"tsx": "^4.22.4",
